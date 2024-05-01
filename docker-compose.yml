@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  fxserver:
+    container_name: fxserver
+    image: traskin/fxserver:latest
+    ports:
+      - 30120:30120/tcp
+      - 30120:30120/udp
+      - 40120:40120
+    volumes:
+      - ./txData:/txData
+      - ./txData/QBCoreFramework.base/server.cfg:/srv/server.cfg
+      - ./txData/QBCoreFramework.base/resources:/srv/resources
+      - ./txData/QBCoreFramework.base/cache:/srv/cache
+    links:
+      - dbserver
+    depends_on:
+      - dbserver
+      
+  dbserver:
+    container_name: dbserver
+    image: mariadb:latest
+    env_file: 
+      - ./.env
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database/mariadb/:/var/lib/mysql
+      
+volumes:
+  database:
